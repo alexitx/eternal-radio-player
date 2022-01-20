@@ -5,6 +5,7 @@ import os.path
 import platform
 import sys
 import platformdirs
+import timeago
 from pathlib import Path
 
 from ._version import __version__
@@ -60,6 +61,15 @@ class App(cmd.Cmd):
             return
         self._player.set_volume(volume / 100)
 
+    def do_recent(self, _):
+        recent_songs_localized = []
+        for recent_song in self._player.get_recent_songs():
+            title = recent_song['title']
+            timestamp = recent_song['timestamp']
+            timestamp_fmt = timeago.format(timestamp)
+            recent_songs_localized.append(f'{title}\n{timestamp_fmt}')
+        self._log.info('\n\n'.join(recent_songs_localized))
+
     def do_about(self, _):
         self._log.info(f'{system_info()}\n\n{CREDITS}')
 
@@ -93,6 +103,13 @@ class App(cmd.Cmd):
             'View or change the sound volume\n\n'
             'Usage:\n'
             '  volume [0-100]'
+        )
+
+    def help_recent(self):
+        self._log.info(
+            'View the recently played songs\n\n'
+            'Usage:\n'
+            '  recent'
         )
 
     def help_about(self):

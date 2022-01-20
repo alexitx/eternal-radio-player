@@ -25,3 +25,6 @@ STREAM_URL = 'https://radio.jump.bg/proxy/mnikolov/stream'
 STREAM_ITER_CHUNK_SIZE = 16 * 1024
 
 PLAYER_FRAME_COUNT = 4 * 1024
+
+RECENT_SONGS_URL = 'https://radio.jump.bg/recentfeed/mnikolov/json'
+RECENT_SONGS_CACHE_TIME = 10.0

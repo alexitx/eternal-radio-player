@@ -1,10 +1,19 @@
+import json
 import logging
+import time
 import miniaudio
 import numpy
+import requests
+import requests.exceptions
 import sounddevice
 from threading import Lock
 
-from .constants import PLAYER_FRAME_COUNT
+from .constants import (
+    PLAYER_FRAME_COUNT,
+    RECENT_SONGS_CACHE_TIME,
+    RECENT_SONGS_URL,
+    REQUEST_TIMEOUT
+)
 from .exceptions import PlayerError
 from .stream import HTTPStreamSource, stream_request
 
@@ -13,6 +22,10 @@ log = logging.getLogger(__name__)
 
 
 class RadioPlayer:
+
+    recent_songs_cache_time = RECENT_SONGS_CACHE_TIME
+    _recent_songs_cache_last = 0.0
+    _recent_songs_cache_data = None
 
     def __init__(self):
         self.running = False
@@ -45,6 +58,28 @@ class RadioPlayer:
 
     def set_volume(self, volume):
         self._volume = volume ** 3
+
+    @classmethod
+    def get_recent_songs(cls, url=RECENT_SONGS_URL, timeout=REQUEST_TIMEOUT):
+        if time.time() - cls._recent_songs_cache_last <= cls.recent_songs_cache_time:
+            return cls._recent_songs_cache_data
+        try:
+            response = requests.get(url=url, timeout=timeout)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            raise PlayerError(f'Could not fetch recent songs: {e}') from e
+        try:
+            items = response.json()['items']
+            recent_songs = []
+            for recent_song in items:
+                title = recent_song['title'][:-6].strip() # Remove ID '[XXXX]' at the end
+                timestamp = min(int(recent_song['date']), int(time.time()))
+                recent_songs.append({'title': title, 'timestamp': timestamp})
+        except (json.JSONDecodeError, KeyError, ValueError) as e:
+            raise PlayerError('Received bad recent songs data') from e
+        cls._recent_songs_cache_data = recent_songs
+        cls._recent_songs_cache_last = time.time()
+        return recent_songs
 
     def _init(self):
         request, encoding, sample_rate = stream_request()
