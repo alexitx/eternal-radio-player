@@ -21,8 +21,7 @@ class App(cmd.Cmd):
 
     prompt = '> '
     intro = (
-        '\n'
-        f'Eternal Radio Player {__version__}\n'
+        f"\nEternal Radio Player {__version__}\n"
         "Type 'help' for a list of commands or 'quit' to exit\n"
     )
     _hidden_attrs = ('do_EOF', 'do_help')
