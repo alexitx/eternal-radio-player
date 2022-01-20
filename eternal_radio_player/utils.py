@@ -1,10 +1,8 @@
 import logging
 import platform
-import sys
 import traceback
 import miniaudio
 import sounddevice
-from pathlib import Path
 
 from ._version import __version__
 
