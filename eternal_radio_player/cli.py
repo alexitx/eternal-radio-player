@@ -146,11 +146,14 @@ def main():
     parser.add_argument(
         '-d',
         '--debug',
-        action='store_true'
+        action='store_true',
+        help='Set logging verbosity to debug'
     )
     parser.add_argument(
         '-l',
-        '--log'
+        '--log',
+        help='Log file path',
+        metavar='<file>'
     )
     args = parser.parse_args()
 
