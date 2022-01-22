@@ -18,8 +18,12 @@ CREDITS = (
     'License: MIT - https://github.com/spatialaudio/python-sounddevice/blob/master/LICENSE'
 )
 
+CONFIG_DEFAULTS = {
+    'connection-timeout': 5.0,
+    'volume': 1.0
+}
+
 USER_AGENT = f'Eternal Radio Player/{__version__}'
-REQUEST_TIMEOUT = 5.0
 
 STREAM_URL = 'https://radio.jump.bg/proxy/mnikolov/stream'
 STREAM_ITER_CHUNK_SIZE = 16 * 1024

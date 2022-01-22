@@ -2,7 +2,8 @@ import logging
 import miniaudio
 import requests
 
-from .constants import REQUEST_TIMEOUT, STREAM_ITER_CHUNK_SIZE, STREAM_URL, USER_AGENT
+from .config import Config
+from .constants import STREAM_ITER_CHUNK_SIZE, STREAM_URL, USER_AGENT
 from .exceptions import StreamError
 
 
@@ -30,7 +31,10 @@ class HTTPStreamSource(miniaudio.StreamableSource):
         return data
 
 
-def stream_request(url=STREAM_URL, user_agent=USER_AGENT, timeout=REQUEST_TIMEOUT, **kwargs):
+def stream_request(url=STREAM_URL, user_agent=USER_AGENT, timeout=None, **kwargs):
+    if timeout is None:
+        timeout = Config.data['connection-timeout']
+
     log.debug(f"Making stream request with URL: '{url}', timeout: {timeout}")
 
     response = requests.get(

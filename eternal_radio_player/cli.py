@@ -9,6 +9,7 @@ import timeago
 from pathlib import Path
 
 from ._version import __version__
+from .config import Config
 from .constants import CREDITS
 from .exceptions import PlayerError
 from .player import RadioPlayer
@@ -37,6 +38,7 @@ class App(cmd.Cmd):
         logger.addHandler(handler)
         self._log = logger
         self._player = RadioPlayer()
+        self._player.set_volume(Config.data['volume'])
 
     def do_play(self, _):
         try:
@@ -59,7 +61,9 @@ class App(cmd.Cmd):
         if not 0 <= volume <= 100:
             self._log.info('The value must be within range 0-100')
             return
-        self._player.set_volume(volume / 100)
+        volume_float = volume / 100
+        self._player.set_volume(volume_float)
+        Config.data['volume'] = volume_float
 
     def do_recent(self, _):
         recent_songs_localized = []
@@ -70,11 +74,43 @@ class App(cmd.Cmd):
             recent_songs_localized.append(f'{title}\n{timestamp_fmt}')
         self._log.info('\n\n'.join(recent_songs_localized))
 
+    def do_config(self, args):
+        if not args:
+            self._log.info('Not enough arguments')
+            return
+
+        args = args.split(' ', 1)
+        subcmd = args[0]
+        value = args[1] if len(args) > 1 else None
+
+        if subcmd == 'connection-timeout':
+            if value is None:
+                connection_timeout = Config.data['connection-timeout']
+                self._log.info(f"Connection Timeout: {connection_timeout}s")
+                return
+
+            try:
+                connection_timeout = float(value)
+            except ValueError:
+                self._log.info(f"Invalid value '{value}'")
+                return
+            if not 1.0 <= connection_timeout <= 60.0:
+                self._log.info('The value be within range 1-60')
+                return
+
+            self._log.info(f'Connection Timeout: {connection_timeout}s')
+            Config.data['connection-timeout'] = connection_timeout
+        elif subcmd == 'save':
+            Config.save()
+        else:
+            self._log.info(f"Invalid argument '{subcmd}'")
+
     def do_about(self, _):
         self._log.info(f'{system_info()}\n\n{CREDITS}')
 
     def do_quit(self, _):
         self._player.stop()
+        Config.save()
         return True
 
     def do_help(self, args):
@@ -110,6 +146,14 @@ class App(cmd.Cmd):
             'View the recently played songs\n\n'
             'Usage:\n'
             '  recent'
+        )
+
+    def help_config(self):
+        self._log.info(
+            'View or change the configuration\n\n'
+            'Usage:\n'
+            '  config connection-timeout [value]\n'
+            '  config save'
         )
 
     def help_about(self):
@@ -171,6 +215,12 @@ def main():
         help='Log file path',
         metavar='<file>'
     )
+    parser.add_argument(
+        '-c',
+        '--config',
+        help='Config file path',
+        metavar='<file>'
+    )
     args = parser.parse_args()
 
     def error(msg, exc=None, tb=False):
@@ -208,6 +258,9 @@ def main():
     root_logger.setLevel(logging.NOTSET)
 
     log.debug(f'System information:\n{system_info()}')
+
+    Config.init(args.config)
+    Config.load()
 
     try:
         App().cmdloop()

@@ -8,11 +8,11 @@ import requests.exceptions
 import sounddevice
 from threading import Lock
 
+from .config import Config
 from .constants import (
     PLAYER_FRAME_COUNT,
     RECENT_SONGS_CACHE_TIME,
-    RECENT_SONGS_URL,
-    REQUEST_TIMEOUT
+    RECENT_SONGS_URL
 )
 from .exceptions import PlayerError
 from .stream import HTTPStreamSource, stream_request
@@ -31,6 +31,7 @@ class RadioPlayer:
         self.running = False
         self._input_stream = None
         self._output_stream = None
+        self._linear_volume = 1.0
         self._volume = 1.0
         self._lock = Lock()
 
@@ -56,11 +57,18 @@ class RadioPlayer:
             self._stop_input()
             self.running = False
 
+    def get_volume(self):
+        return self._linear_volume
+
     def set_volume(self, volume):
+        self._linear_volume = volume
         self._volume = volume ** 3
 
     @classmethod
-    def get_recent_songs(cls, url=RECENT_SONGS_URL, timeout=REQUEST_TIMEOUT):
+    def get_recent_songs(cls, url=RECENT_SONGS_URL, timeout=None):
+        if timeout is None:
+            timeout = Config.data['connection-timeout']
+
         if time.time() - cls._recent_songs_cache_last <= cls.recent_songs_cache_time:
             return cls._recent_songs_cache_data
         try:
