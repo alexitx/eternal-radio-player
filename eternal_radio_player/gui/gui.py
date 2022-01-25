@@ -6,7 +6,7 @@ from functools import partial
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from ..config import Config
-from ..constants import CREDITS
+from ..constants import CREDITS, RECENT_SONGS_UPDATE_TIME, REQUEST_TIMEOUT
 from ..exceptions import PlayerError
 from ..player import RadioPlayer
 from ..utils import qt_resource, system_info
@@ -22,27 +22,27 @@ class RecentSongsUpdateWorker(QtCore.QObject):
 
     result = QtCore.Signal(list)
 
-    def __init__(self, update_time=30, **kwargs):
+    def __init__(self, update_time=RECENT_SONGS_UPDATE_TIME, timeout=REQUEST_TIMEOUT, **kwargs):
         super().__init__(**kwargs)
-        self._update_time = update_time
-        self._running = True
+        self.update_time = update_time
+        self.timeout = timeout
+        self._running = False
 
-    def update(self):
-        if not self._running:
-            return
+    def run(self):
+        self._running = True
         try:
-            data = RadioPlayer.get_recent_songs()
+            data = RadioPlayer.get_recent_songs(self.timeout)
         except PlayerError as e:
             log.error(f'Recent songs update worker error: {e}')
         else:
             self.result.emit(data)
         last_update = time.time()
         while self._running:
-            if time.time() - last_update < self._update_time:
+            if time.time() - last_update < self.update_time:
                 time.sleep(1)
                 continue
             try:
-                data = RadioPlayer.get_recent_songs()
+                data = RadioPlayer.get_recent_songs(self.timeout)
             except PlayerError as e:
                 log.error(f'Recent songs update worker error: {e}')
             else:
@@ -136,13 +136,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.recent_songs_container_layout.setContentsMargins(0, 0, 0, 0)
         self.recent_songs_spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
 
+        # Setup recent songs update worker
         self.recent_songs_widgets = []
-        self.recent_songs_update_worker_thread = None
-        self.recent_songs_update_worker = None
+        self.recent_songs_update_worker_thread = QtCore.QThread(self)
+        self.recent_songs_update_worker = RecentSongsUpdateWorker()
+        self.recent_songs_update_worker.result.connect(self.update_recent_songs)
+        self.recent_songs_update_worker.moveToThread(self.recent_songs_update_worker_thread)
+        self.recent_songs_update_worker_thread.started.connect(self.recent_songs_update_worker.run)
 
         log.info('GUI initialized')
 
-        self.start_recent_songs_update_worker()
+        log.debug('Starting recent songs update worker')
+        self.recent_songs_update_worker_thread.start()
 
     def on_play(self, state):
         self.playing = state
@@ -206,7 +211,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def save_settings(self):
         log.info('Saving settings')
-        Config.data['connection-timeout'] = self.ui.connection_timeout_input.value()
+        connection_timeout = self.ui.connection_timeout_input.value()
+        self.recent_songs_update_worker.timeout = connection_timeout
+        Config.data['connection-timeout'] = connection_timeout
         Config.save()
 
     def update_recent_songs(self, recent_songs):
@@ -229,30 +236,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.recent_songs_widgets.append(recent_song)
         self.recent_songs_container_layout.addSpacerItem(self.recent_songs_spacer)
 
-    def start_recent_songs_update_worker(self):
-        if self.recent_songs_update_worker_thread or self.recent_songs_update_worker:
-            raise RuntimeError('Recent songs update worker is already running')
-        log.debug('Starting recent songs update worker')
-        self.recent_songs_update_worker_thread = QtCore.QThread(self)
-        self.recent_songs_update_worker = RecentSongsUpdateWorker()
-        self.recent_songs_update_worker.result.connect(self.update_recent_songs)
-        self.recent_songs_update_worker.moveToThread(self.recent_songs_update_worker_thread)
-        self.recent_songs_update_worker_thread.started.connect(self.recent_songs_update_worker.update)
-        self.recent_songs_update_worker_thread.start()
-
-    def stop_recent_songs_update_worker(self):
-        log.debug('Stopping recent songs update worker')
-        if self.recent_songs_update_worker:
-            self.recent_songs_update_worker.stop()
-            self.recent_songs_update_worker.deleteLater()
-        if self.recent_songs_update_worker_thread:
-            self.recent_songs_update_worker_thread.quit()
-            self.recent_songs_update_worker_thread.wait()
-        self.recent_songs_update_worker = None
-        self.recent_songs_update_worker_thread = None
-
     def closeEvent(self, event):
-        self.stop_recent_songs_update_worker()
+        log.debug('Stopping recent songs update worker')
+        self.recent_songs_update_worker.stop()
+        self.recent_songs_update_worker_thread.quit()
+        self.recent_songs_update_worker_thread.wait()
+        self.recent_songs_update_worker.deleteLater()
         log.info('Saving settings')
         Config.save()
         super().closeEvent(event)
