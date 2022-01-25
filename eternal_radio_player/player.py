@@ -67,11 +67,11 @@ class RadioPlayer:
         self._volume = volume ** 3
 
     @classmethod
-    def get_recent_songs(cls, url=RECENT_SONGS_URL, timeout=REQUEST_TIMEOUT):
+    def get_recent_songs(cls, timeout=REQUEST_TIMEOUT):
         if time.time() - cls._recent_songs_cache_last <= cls.recent_songs_cache_time:
             return cls._recent_songs_cache_data
         try:
-            response = requests.get(url=url, timeout=timeout)
+            response = requests.get(url=RECENT_SONGS_URL, timeout=timeout)
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
             raise PlayerError(f'Could not fetch recent songs: {e}') from e
@@ -89,7 +89,7 @@ class RadioPlayer:
         return recent_songs
 
     def _init(self):
-        request, encoding, sample_rate = stream_request(timeout=self.request_timeout)
+        request, encoding, sample_rate = stream_request(self.request_timeout)
         if not sample_rate:
             sample_rate = sounddevice.default.samplerate or 44100
         log.debug(

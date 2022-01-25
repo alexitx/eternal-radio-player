@@ -30,12 +30,12 @@ class HTTPStreamSource(miniaudio.StreamableSource):
         return data
 
 
-def stream_request(url=STREAM_URL, user_agent=USER_AGENT, timeout=REQUEST_TIMEOUT, **kwargs):
-    log.debug(f"Making stream request with URL: '{url}', timeout: {timeout}")
+def stream_request(timeout=REQUEST_TIMEOUT, **kwargs):
+    log.debug(f"Making stream request with URL: '{STREAM_URL}', timeout: {timeout}")
 
     response = requests.get(
-        url=url,
-        headers={'User-Agent': user_agent},
+        url=STREAM_URL,
+        headers={'User-Agent': USER_AGENT},
         timeout=timeout,
         stream=True,
         **kwargs

@@ -68,7 +68,7 @@ class App(cmd.Cmd):
     def do_recent(self, _):
         recent_songs_localized = []
         connection_timeout = Config.data['connection-timeout']
-        for recent_song in self._player.get_recent_songs(timeout=connection_timeout):
+        for recent_song in self._player.get_recent_songs(connection_timeout):
             title = recent_song['title']
             timestamp = recent_song['timestamp']
             timestamp_fmt = timeago.format(timestamp)
