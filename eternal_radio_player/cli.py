@@ -37,7 +37,7 @@ class App(cmd.Cmd):
         handler = logging.StreamHandler()
         logger.addHandler(handler)
         self._log = logger
-        self._player = RadioPlayer()
+        self._player = RadioPlayer(Config.data['connection-timeout'])
         self._player.set_volume(Config.data['volume'])
 
     def do_play(self, _):
@@ -67,7 +67,8 @@ class App(cmd.Cmd):
 
     def do_recent(self, _):
         recent_songs_localized = []
-        for recent_song in self._player.get_recent_songs():
+        connection_timeout = Config.data['connection-timeout']
+        for recent_song in self._player.get_recent_songs(timeout=connection_timeout):
             title = recent_song['title']
             timestamp = recent_song['timestamp']
             timestamp_fmt = timeago.format(timestamp)
@@ -98,8 +99,11 @@ class App(cmd.Cmd):
                 self._log.info('The value be within range 1-60')
                 return
 
-            self._log.info(f'Connection Timeout: {connection_timeout}s')
+            if self._player.running:
+                self._player.stop()
+            self._player.request_timeout = connection_timeout
             Config.data['connection-timeout'] = connection_timeout
+            self._log.info(f'Connection timeout: {connection_timeout}s')
         elif subcmd == 'save':
             Config.save()
         else:
