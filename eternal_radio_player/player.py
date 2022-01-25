@@ -29,6 +29,7 @@ class RadioPlayer:
 
     def __init__(self):
         self.running = False
+        self._stream_source = None
         self._input_stream = None
         self._output_stream = None
         self._linear_volume = 1.0
@@ -105,8 +106,9 @@ class RadioPlayer:
             callback=self._stream_callback_wrapper,
             finished_callback=self._finished_callback
         )
+        self._stream_source = HTTPStreamSource(request)
         self._input_stream = miniaudio.stream_any(
-            source=HTTPStreamSource(request),
+            source=self._stream_source,
             source_format=encoding,
             output_format=miniaudio.SampleFormat.FLOAT32,
             nchannels=2,
