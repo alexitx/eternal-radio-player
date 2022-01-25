@@ -1,6 +1,6 @@
 __author__ = 'alexitx'
 __author_email__ = 'alexander@alexitx.com'
-__license__ = 'GNU General Public License v3.0 or later'
+__license__ = 'GPLv3+'
 __title__ = 'eternal-radio-player'
 __url__ = 'https://github.com/alexitx/eternal-radio-player'
 __version__ = '0.1.0-dev'
