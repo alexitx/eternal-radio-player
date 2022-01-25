@@ -5,6 +5,7 @@ import miniaudio
 import sounddevice
 
 from ._version import __version__
+from .exceptions import ResourceError
 
 
 log = logging.getLogger(__name__)
@@ -45,6 +46,22 @@ def sounddevice_backend_version():
     return sounddevice.get_portaudio_version()[1]
 
 
+def pyside_version():
+    try:
+        import PySide6
+    except ImportError:
+        return None
+    return PySide6.__version__
+
+
+def qt_version():
+    try:
+        from PySide6.QtCore import qVersion
+    except ImportError:
+        return None
+    return qVersion()
+
+
 def system_info():
     return (
         f'Eternal Radio Player {__version__}\n'
@@ -53,5 +70,24 @@ def system_info():
         f'miniaudio: {miniaudio_version()}\n'
         f'miniaudio Backend: {miniaudio_backend_version()}\n'
         f'sounddevice: {sounddevice_version()}\n'
-        f'sounddevice Backend: {sounddevice_backend_version()}'
+        f'sounddevice Backend: {sounddevice_backend_version()}\n'
+        f'PySide: {pyside_version()}\n'
+        f'Qt: {qt_version()}'
     )
+
+
+def qt_resource(path, text=False):
+    from PySide6 import QtCore
+
+    file = QtCore.QFile(path)
+    if text:
+        is_open = file.open(QtCore.QIODevice.ReadOnly | QtCore.QIODevice.Text)
+        file_wrapper = QtCore.QTextStream(file)
+    else:
+        is_open = file.open(QtCore.QIODevice.ReadOnly)
+        file_wrapper = file
+    if not is_open:
+        raise ResourceError(f'{file.error()}: {file.errorString()}')
+    data = file_wrapper.readAll()
+    file.close()
+    return data

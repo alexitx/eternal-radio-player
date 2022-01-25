@@ -40,6 +40,10 @@ logs/
 temp/
 tmp/
 
+# Compiled Qt Python files
+/eternal_radio_player/gui/generated/*
+!/eternal_radio_player/gui/generated/__init__.py
+
 # PyInstaller
 pyinstaller-build/
 pyinstaller-dist/

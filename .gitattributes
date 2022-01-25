@@ -17,3 +17,8 @@
 *.ps1 text eol=crlf
 *.sh text eol=lf
 *.zsh text eol=lf
+
+# Qt
+*.qrc text eol=lf
+*.qss text eol=lf
+*.ui text eol=lf

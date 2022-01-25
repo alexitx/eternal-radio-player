@@ -1,0 +1,145 @@
+/* Global styles */
+
+QFrame[frameShape="NoFrame"] {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+}
+
+QAbstractScrollArea {
+    margin: 0;
+    padding: 0;
+}
+
+QGroupBox {
+    padding-top: 6px;
+    font-weight: normal;
+}
+
+QGroupBox::title {
+    top: 0;
+}
+
+RecentSong QLabel {
+    background-color: transparent;
+}
+
+/* Non-global styles */
+
+/* Tooltips and menus font size */
+
+QMenu,
+QToolTip {
+    font-size: 11pt;
+}
+
+/* Recent songs page */
+
+#recent_songs {
+    padding: 8px;
+    background-color: #2b1c40;
+}
+
+#recent_songs QScrollBar {
+    background-color: transparent;
+}
+
+#recent_songs QScrollBar::sub-line,
+#recent_songs QScrollBar::add-line,
+#recent_songs QScrollBar::up-arrow,
+#recent_songs QScrollBar::right-arrow,
+#recent_songs QScrollBar::down-arrow,
+#recent_songs QScrollBar::left-arrow {
+    width: 0;
+    height: 0;
+    background-color: transparent;
+}
+
+#recent_songs QScrollBar:vertical {
+    width: 8px;
+}
+
+#recent_songs QScrollBar:horizontal {
+    height: 8px;
+}
+
+#recent_songs QScrollBar::handle {
+    margin: 0;
+    background-color: #3b2659;
+    border-radius: 4px;
+}
+
+#recent_songs QScrollBar::handle:hover {
+    margin: 0;
+    background-color: #472e6b;
+}
+
+#recent_songs_container {
+    background-color: transparent;
+}
+
+#recent_song_entry {
+    margin-right: 8px;
+    background-color: transparent;
+    border-radius: 4px;
+}
+
+#recent_song_entry.alternate {
+    background-color: #34224f;
+}
+
+#recent_song_entry #timestamp {
+    color: #9270c2;
+}
+
+/* Controls bar */
+
+#controls_widget {
+    padding: 0 8px;
+    background-color: #080808;
+}
+
+#controls_widget ControlToolButton {
+    width: 36px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    icon-size: 24px;
+}
+
+#volume_slider {
+    height: 40px;
+    margin: 0 8px;
+    background-color: transparent;
+}
+
+#volume_slider::sub-page {
+    background-color: #fff;
+}
+
+#volume_slider::add-page {
+    background-color: #606060;
+}
+
+#volume_slider::groove:horizontal {
+    height: 2px;
+}
+
+#volume_slider::handle {
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    border-radius: 6px;
+}
+
+#volume_slider::handle:hover,
+#volume_slider::handle:pressed {
+    background-color: #9933ff;
+}
+
+#output_device_menu::item {
+    padding: 6px 12px;
+}

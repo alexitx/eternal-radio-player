@@ -12,3 +12,7 @@ class StreamError(EternalRadioPlayerError):
 
 class PlayerError(EternalRadioPlayerError):
     pass
+
+
+class ResourceError(EternalRadioPlayerError):
+    pass
