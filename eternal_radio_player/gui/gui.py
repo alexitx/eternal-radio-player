@@ -128,6 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.system_info.setPlainText(system_info())
         self.ui.credits.setPlainText(CREDITS)
         self.ui.connection_timeout_input.setValue(Config.data['connection-timeout'])
+        self.ui.recent_songs_update_time_input.setValue(Config.data['recent-songs-update-time'])
         self.ui.settings_save_button.clicked.connect(self.save_settings)
         self.ui.settings_back_button.clicked.connect(lambda: self.ui.main_widget.setCurrentIndex(0))
 
@@ -139,7 +140,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Setup recent songs update worker
         self.recent_songs_widgets = []
         self.recent_songs_update_worker_thread = QtCore.QThread(self)
-        self.recent_songs_update_worker = RecentSongsUpdateWorker()
+        self.recent_songs_update_worker = RecentSongsUpdateWorker(Config.data['recent-songs-update-time'])
         self.recent_songs_update_worker.result.connect(self.update_recent_songs)
         self.recent_songs_update_worker.moveToThread(self.recent_songs_update_worker_thread)
         self.recent_songs_update_worker_thread.started.connect(self.recent_songs_update_worker.run)
@@ -214,6 +215,9 @@ class MainWindow(QtWidgets.QMainWindow):
         connection_timeout = self.ui.connection_timeout_input.value()
         self.recent_songs_update_worker.timeout = connection_timeout
         Config.data['connection-timeout'] = connection_timeout
+        recent_songs_update_time = self.ui.recent_songs_update_time_input.value()
+        self.recent_songs_update_worker.update_time = recent_songs_update_time
+        Config.data['recent-songs-update-time'] = recent_songs_update_time
         Config.save()
 
     def update_recent_songs(self, recent_songs):

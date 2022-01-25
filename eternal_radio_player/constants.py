@@ -60,5 +60,6 @@ RECENT_SONGS_UPDATE_TIME = 30.0
 
 CONFIG_DEFAULTS = {
     'connection-timeout': REQUEST_TIMEOUT,
+    'recent-songs-update-time': RECENT_SONGS_UPDATE_TIME,
     'volume': 1.0
 }
