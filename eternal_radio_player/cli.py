@@ -110,7 +110,10 @@ class App(cmd.Cmd):
             self._log.info(f"Invalid argument '{subcmd}'")
 
     def do_about(self, _):
-        self._log.info(f'{system_info()}\n\n{CREDITS}')
+        self._log.info(system_info())
+
+    def do_credits(self, _):
+        self._log.info(CREDITS)
 
     def do_quit(self, _):
         self._player.stop()
@@ -162,9 +165,16 @@ class App(cmd.Cmd):
 
     def help_about(self):
         self._log.info(
-            'View information about this app and the system\n\n'
+            'View system information\n\n'
             'Usage:\n'
             '  about'
+        )
+
+    def help_credits(self):
+        self._log.info(
+            'View credits and licenses\n\n'
+            'Usage:\n'
+            '  credits'
         )
 
     def help_quit(self):
