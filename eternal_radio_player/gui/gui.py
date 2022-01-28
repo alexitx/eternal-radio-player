@@ -211,7 +211,6 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
     def save_settings(self):
-        log.info('Saving settings')
         connection_timeout = self.ui.connection_timeout_input.value()
         self.recent_songs_update_worker.timeout = connection_timeout
         Config.data['connection-timeout'] = connection_timeout
@@ -246,7 +245,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.recent_songs_update_worker_thread.quit()
         self.recent_songs_update_worker_thread.wait()
         self.recent_songs_update_worker.deleteLater()
-        log.info('Saving settings')
         Config.save()
         super().closeEvent(event)
 
