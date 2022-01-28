@@ -39,3 +39,7 @@ venv/
 logs/
 temp/
 tmp/
+
+# PyInstaller
+pyinstaller-build/
+pyinstaller-dist/
