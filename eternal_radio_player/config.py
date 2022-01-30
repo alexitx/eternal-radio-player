@@ -20,6 +20,7 @@ class Config:
     _file = None
     _schema = schema.Schema(
         {
+            schema.Optional('output-device'): int,
             schema.Optional('connection-timeout'): float,
             schema.Optional('volume'): float
         },

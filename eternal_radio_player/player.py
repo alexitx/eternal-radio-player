@@ -12,7 +12,8 @@ from .constants import (
     PLAYER_FRAME_COUNT,
     RECENT_SONGS_CACHE_TIME,
     RECENT_SONGS_URL,
-    REQUEST_TIMEOUT
+    REQUEST_TIMEOUT,
+    SOUNDDEVICE_HOST_API
 )
 from .exceptions import PlayerError
 from .stream import HTTPStreamSource, stream_request
@@ -21,15 +22,52 @@ from .stream import HTTPStreamSource, stream_request
 log = logging.getLogger(__name__)
 
 
+def get_output_device(device_index=None, host_api_index=SOUNDDEVICE_HOST_API):
+    host_api = sounddevice.query_hostapis(host_api_index)
+    if device_index is None:
+        device_index = host_api['default_output_device']
+    elif device_index not in host_api['devices']:
+        raise ValueError(f"Output device with index '{device_index}' not found")
+    try:
+        device = sounddevice.query_devices(device_index, 'output')
+    except (sounddevice.PortAudioError, ValueError) as e:
+        raise ValueError(f"Output device with index '{device_index}' not found") from e
+    return {
+        'name': device['name'],
+        'sample_rate': int(device['default_samplerate']),
+        'index': device_index
+    }
+
+
+def get_output_devices(host_api_index=SOUNDDEVICE_HOST_API):
+    host_api = sounddevice.query_hostapis(host_api_index)
+    devices = []
+    for device_index in host_api['devices']:
+        try:
+            device = sounddevice.query_devices(device_index, 'output')
+        except (sounddevice.PortAudioError, ValueError):
+            continue
+        devices.append({
+            'name': device['name'],
+            'sample_rate': int(device['default_samplerate']),
+            'index': device_index
+        })
+    return devices
+
+
 class RadioPlayer:
 
     recent_songs_cache_time = RECENT_SONGS_CACHE_TIME
     _recent_songs_cache_last = 0.0
     _recent_songs_cache_data = None
 
-    def __init__(self, request_timeout=REQUEST_TIMEOUT):
+    def __init__(self, output_device_index=None, request_timeout=REQUEST_TIMEOUT):
         self.running = False
         self.request_timeout = request_timeout
+        try:
+            self.output_device = get_output_device(output_device_index)
+        except ValueError:
+            self.output_device = get_output_device()
         self._stream_source = None
         self._input_stream = None
         self._output_stream = None
@@ -91,7 +129,8 @@ class RadioPlayer:
     def _init(self):
         request, encoding, sample_rate = stream_request(self.request_timeout)
         if not sample_rate:
-            sample_rate = sounddevice.default.samplerate or 44100
+            sample_rate = self.output_device['sample_rate']
+
         log.debug(
             f'Initializing player with request status: {request.status_code}, '
             f'encoding: {encoding}, sample rate: {sample_rate}'
@@ -99,6 +138,7 @@ class RadioPlayer:
         self._output_stream = sounddevice.OutputStream(
             samplerate=sample_rate,
             blocksize=PLAYER_FRAME_COUNT,
+            device=self.output_device['index'],
             channels=2,
             dtype=numpy.float32,
             callback=self._stream_callback_wrapper,

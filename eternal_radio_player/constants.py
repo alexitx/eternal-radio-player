@@ -1,3 +1,5 @@
+import sounddevice
+
 from ._version import __version__
 
 
@@ -43,6 +45,14 @@ STREAM_URL = 'https://radio.jump.bg/proxy/mnikolov/stream'
 STREAM_ITER_CHUNK_SIZE = 16 * 1024
 
 PLAYER_FRAME_COUNT = 4 * 1024
+
+# Default sounddevice host API
+for index, host_api in enumerate(sounddevice.query_hostapis()):
+    if host_api['name'] == 'Windows WASAPI' and host_api['default_output_device'] != -1:
+        SOUNDDEVICE_HOST_API = index
+        break
+else:
+    SOUNDDEVICE_HOST_API = sounddevice.default.hostapi
 
 RECENT_SONGS_URL = 'https://radio.jump.bg/recentfeed/mnikolov/json'
 RECENT_SONGS_CACHE_TIME = 10.0

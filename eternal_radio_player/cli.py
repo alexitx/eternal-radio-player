@@ -12,7 +12,7 @@ from ._version import __version__
 from .config import Config
 from .constants import CREDITS
 from .exceptions import PlayerError
-from .player import RadioPlayer
+from .player import get_output_device, get_output_devices, RadioPlayer
 from .utils import format_exc, system_info
 
 
@@ -37,7 +37,7 @@ class App(cmd.Cmd):
         handler = logging.StreamHandler()
         logger.addHandler(handler)
         self._log = logger
-        self._player = RadioPlayer(Config.data['connection-timeout'])
+        self._player = RadioPlayer(Config.data['output-device'], Config.data['connection-timeout'])
         self._player.set_volume(Config.data['volume'])
 
     def do_play(self, _):
@@ -104,6 +104,33 @@ class App(cmd.Cmd):
             self._player.request_timeout = connection_timeout
             Config.data['connection-timeout'] = connection_timeout
             self._log.info(f'Connection timeout: {connection_timeout}s')
+        elif subcmd == 'output-device':
+            output_devices = get_output_devices()
+            if value is None:
+                output_devices_str = '\n'.join([f"#{device['index']} - {device['name']}" for device in output_devices])
+                current_device_str = f"#{self._player.output_device['index']} - {self._player.output_device['name']}"
+                self._log.info(
+                    f'Output device: {current_device_str}\n\n'
+                    'Available devices:\n'
+                    f'{output_devices_str}'
+                )
+                return
+            try:
+                selected_device_index = int(value)
+            except ValueError:
+                self._log.info(f"Invalid value '{value}'")
+                return
+            try:
+                device = get_output_device(selected_device_index)
+            except PlayerError:
+                self._log.info(f"Device with index '{value}' not found")
+                return
+            if self._player.running:
+                self._player.stop()
+            self._player.output_device = device
+            Config.data['output-device'] = device['index']
+            self._log.info(f"Output device: #{device['index']} - {device['name']}")
+            return
         elif subcmd == 'save':
             Config.save()
         else:
@@ -160,6 +187,7 @@ class App(cmd.Cmd):
             'View or change the configuration\n\n'
             'Usage:\n'
             '  config connection-timeout [value]\n'
+            '  config output-device [index]'
             '  config save'
         )
 
@@ -273,8 +301,11 @@ def main():
 
     log.debug(f'System information:\n{system_info()}')
 
+    defaults = {
+        'output-device': get_output_device()['index']
+    }
     Config.init(args.config)
-    Config.load()
+    Config.load(defaults)
 
     try:
         App().cmdloop()
