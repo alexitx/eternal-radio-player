@@ -55,6 +55,23 @@ def get_output_devices(host_api_index=SOUNDDEVICE_HOST_API):
     return devices
 
 
+def check_output_device_params(device_index, channels, sample_rate, sample_width):
+    try:
+        sounddevice.check_output_settings(
+            device=device_index,
+            channels=channels,
+            dtype=sample_width,
+            samplerate=sample_rate
+        )
+    except sounddevice.PortAudioError as e:
+        log.debug(
+            f'Incompatible device parameters: Index: {device_index}, Channels: {channels}, '
+            f'Width: {sample_width}, Rate: {sample_rate}, Error: {e}'
+        )
+        return False
+    return True
+
+
 class RadioPlayer:
 
     recent_songs_cache_time = RECENT_SONGS_CACHE_TIME
@@ -130,6 +147,13 @@ class RadioPlayer:
         request, encoding, sample_rate = stream_request(self.request_timeout)
         if not sample_rate:
             sample_rate = self.output_device['sample_rate']
+
+        for sr in (sample_rate, self.output_device['sample_rate']):
+            if check_output_device_params(self.output_device['index'], 2, sr, 'float32'):
+                sample_rate = sr
+                break
+        else:
+            raise PlayerError('Could not find supported device parameters')
 
         log.debug(
             f'Initializing player with request status: {request.status_code}, '
