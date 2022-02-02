@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/alexitx/eternal-radio-player/raw/gui/docs/assets/eternal-radio-player.svg" height="100px"/>
+  <img src="https://github.com/alexitx/eternal-radio-player/raw/master/docs/assets/eternal-radio-player.svg" height="100px"/>
 
   <h1>Eternal Radio Player</h1>
 
