@@ -148,7 +148,7 @@ jobs:
         id: build
         run: |
           python3 -m build --sdist --wheel --outdir dist/ .
-          echo "::set-output name=wheel::eternal-radio-player-${{ needs.prepare.outputs.version }}-py3-none-any.whl"
+          echo "::set-output name=wheel::eternal_radio_player-${{ needs.prepare.outputs.version }}-py3-none-any.whl"
 
       - name: Upload wheel asset
         uses: actions/upload-release-asset@v1
