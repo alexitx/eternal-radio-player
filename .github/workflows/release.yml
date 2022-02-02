@@ -165,6 +165,12 @@ jobs:
           python3 -m pip install -U setuptools wheel
           python3 -m pip install build
 
+      - name: Install package
+        run: |
+          python -m pip install .[gui]
+          chmod +x scripts/qt-compile.sh
+          ./scripts/qt-compile.sh
+
       - name: Build distribution
         id: build
         run: |
