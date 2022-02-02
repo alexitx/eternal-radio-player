@@ -12,7 +12,6 @@ from ._version import __version__
 from .config import Config
 from .constants import CREDITS
 from .exceptions import PlayerError
-from .gui.gui import gui_main
 from .player import get_output_device, get_output_devices, RadioPlayer
 from .utils import format_exc, system_info
 
@@ -322,6 +321,7 @@ def main():
             log.debug('GUI dependencies not available')
         else:
             log.info('Starting in GUI mode')
+            from .gui.gui import gui_main
             sys.exit(gui_main())
 
     try:
