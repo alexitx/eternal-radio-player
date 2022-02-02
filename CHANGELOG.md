@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.2]
+### Fixed
+- Compiled Qt modules missing in standard distribution and wheels
+
 ## [0.1.1]
 ### Fixed
 - Add missing 'gui' extra install option
