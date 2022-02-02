@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: pyinstaller/pyinstaller
-          ref: ${{ env.PYINSTALLER_VERSION }}
+          ref: v${{ env.PYINSTALLER_VERSION }}
           path: temp/pyinstaller/
 
       - name: Compile PyInstaller bootloader
