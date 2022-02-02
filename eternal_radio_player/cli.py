@@ -252,13 +252,19 @@ def main():
         help='Set logging verbosity to debug'
     )
     parser.add_argument(
+        '-c',
+        '--cli',
+        action='store_true',
+        help='Run in CLI mode'
+    )
+    parser.add_argument(
         '-l',
         '--log',
         help='Log file path',
         metavar='<file>'
     )
     parser.add_argument(
-        '-c',
+        '-C',
         '--config',
         help='Config file path',
         metavar='<file>'
@@ -307,7 +313,19 @@ def main():
     Config.init(args.config)
     Config.load(defaults)
 
+    if not args.cli:
+        try:
+            import PySide6
+            import qdarktheme
+        except ImportError:
+            log.debug('GUI dependencies not available')
+        else:
+            log.info('Starting in GUI mode')
+            from .gui.gui import gui_main
+            sys.exit(gui_main())
+
     try:
+        log.info('Starting in CLI mode')
         App().cmdloop()
         log.info('Exiting')
         sys.exit()

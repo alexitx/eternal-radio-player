@@ -29,7 +29,7 @@ class Config:
 
     @classmethod
     def init(cls, file=None):
-        log.info('Initializing configuration')
+        log.debug('Initializing configuration')
 
         if file:
             config_dir = Path(os.path.dirname(file))
@@ -56,7 +56,7 @@ class Config:
         if not defaults:
             defaults = {}
 
-        log.info('Loading configuration')
+        log.debug('Loading configuration')
 
         # Load the config file if it exists, else use empty dict
         try:
@@ -84,7 +84,7 @@ class Config:
         if not defaults:
             defaults = {}
 
-        log.info('Saving configuration')
+        log.debug('Saving configuration')
 
         try:
             with open(cls._file, 'w', encoding='utf-8') as f:

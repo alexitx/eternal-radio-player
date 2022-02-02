@@ -1,0 +1,22 @@
+<RCC>
+  <qresource>
+    <file>style.qss</file>
+  </qresource>
+  <qresource prefix="icons">
+    <file alias="eternal-radio-player.ico">../icons/eternal-radio-player.ico</file>
+    <file alias="console.svg">../icons/console.svg</file>
+    <file alias="console_accent.svg">../icons/console_accent.svg</file>
+    <file alias="output-device.svg">../icons/output-device.svg</file>
+    <file alias="output-device_accent.svg">../icons/output-device_accent.svg</file>
+    <file alias="play.svg">../icons/play.svg</file>
+    <file alias="play_accent.svg">../icons/play_accent.svg</file>
+    <file alias="settings.svg">../icons/settings.svg</file>
+    <file alias="settings_accent.svg">../icons/settings_accent.svg</file>
+    <file alias="stop.svg">../icons/stop.svg</file>
+    <file alias="stop_accent.svg">../icons/stop_accent.svg</file>
+    <file alias="volume-muted.svg">../icons/volume-muted.svg</file>
+    <file alias="volume-muted_accent.svg">../icons/volume-muted_accent.svg</file>
+    <file alias="volume-normal.svg">../icons/volume-normal.svg</file>
+    <file alias="volume-normal_accent.svg">../icons/volume-normal_accent.svg</file>
+  </qresource>
+</RCC>
