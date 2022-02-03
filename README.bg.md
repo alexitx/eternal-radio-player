@@ -53,7 +53,7 @@
     python -m pip install --upgrade setuptools wheel
     ```
 
-4. Инсталирайте:
+4. Инсталирайте
 
     Бележка: Eternal Radio Player се инсталира с команден интерфейс по подразбиране.
     По желание можете да инсталирате необходимите пакети за графичен интерфейс.
@@ -82,13 +82,27 @@
     $ python3 --version
     ```
 
-4. Обновете pip и основните пакети:
+4. Инсталирайте библиотеката PortAudio
+
+    За дистрибуции базирани на Debian (Ubuntu, Mint, Pop!_OS, и други):
+    ```sh
+    sudo apt update && sudo apt install -y libportaudio2
+    ```
+
+    За дистрибуции базирани на Arch (Manjaro, EndeavourOS, и други):
+    ```sh
+    sudo pacman -Syy && sudo pacman -S portaudio
+    ```
+
+    Ако не сте сигурни, потърсете онлайн как да инсталирате portaudio на вашата система.
+
+5. Обновете pip и основните пакети:
     ```sh
     $ python3 -m pip install --user --upgrade pip
     $ python3 -m pip install --user --upgrade setuptools wheel
     ```
 
-4. Инсталирайте:
+6. Инсталирайте
 
     Бележка: Eternal Radio Player се инсталира с команден интерфейс по подразбиране.
     По желание можете да инсталирате необходимите пакети за графичен интерфейс.
@@ -102,7 +116,7 @@
     $ python3 -m pip install --upgrade eternal-radio-player
     ```
 
-6. Актуализирайте Eternal Radio Player периодично, като използвате избраната по-горе
+7. Актуализирайте Eternal Radio Player периодично, като използвате избраната по-горе
 команда за инсталация
 
 

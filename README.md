@@ -52,9 +52,9 @@ larger and slower.
     python -m pip install --upgrade setuptools wheel
     ```
 
-4. Install:
+4. Install
 
-    Note: Eternal Radio Player has command-line interface by default.
+    Note: Eternal Radio Player is installed with command-line interface by default.
     You can optionally install the GUI dependencies.
 
     For GUI installation:
@@ -79,15 +79,29 @@ larger and slower.
     $ python3 --version
     ```
 
-4. Update pip and dependencies
+4. Install the PortAudio library
+
+    On Debian-based distros (Ubuntu, Mint, Pop!_OS, etc.):
+    ```sh
+    sudo apt update && sudo apt install -y libportaudio2
+    ```
+
+    On Arch-based distros (Arch, Manjaro, EndeavourOS, etc.):
+    ```sh
+    sudo pacman -Syy && sudo pacman -S portaudio
+    ```
+
+    If unsure, check online on how to install portaudio on your system.
+
+5. Update pip and dependencies:
     ```sh
     $ python3 -m pip install --user --upgrade pip
     $ python3 -m pip install --user --upgrade setuptools wheel
     ```
 
-4. Install:
+6. Install
 
-    Note: Eternal Radio Player has command-line interface by default.
+    Note: Eternal Radio Player is installed with command-line interface by default.
     You can optionally install the GUI dependencies.
 
     For GUI installation:
@@ -99,7 +113,7 @@ larger and slower.
     $ python3 -m pip install --upgrade eternal-radio-player
     ```
 
-6. Update Eternal Radio Player periodically using the previous installation command
+7. Update Eternal Radio Player periodically using the previous installation command
 
 
 ## Usage
