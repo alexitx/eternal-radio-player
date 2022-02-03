@@ -10,6 +10,12 @@
   with limited resources or where a graphical environment is not present.</em></p>
 </div>
 
+
+## Language
+- [Български][readme-bg]
+- [English][readme-en]
+
+
 ## Table of contents
 
 - [Installation](#installation)
@@ -164,6 +170,8 @@ $ QT_QPA_PLATFORM=xcb eternal-radio-player
 GNU General Public License v3.0 or later. See [LICENSE][license] for more information.
 
 
+[readme-en]: https://github.com/alexitx/eternal-radio-player/blob/master/README.md
+[readme-bg]: https://github.com/alexitx/eternal-radio-player/blob/master/README.bg.md
 [releases]: https://github.com/alexitx/eternal-radio-player/releases
 [license]: https://github.com/alexitx/eternal-radio-player/blob/master/LICENSE
 [python-download]: https://www.python.org/downloads
