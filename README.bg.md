@@ -11,7 +11,7 @@
 </div>
 
 
-## Language
+## Език
 - [Български][readme-bg]
 - [English][readme-en]
 
