@@ -131,7 +131,7 @@ jobs:
           archive="${release_name}.zip"
 
           mkdir -p "release/$release_name/"
-          cp -r pyinstaller-dist/* LICENSE README.md "release/$release_name/"
+          cp -r pyinstaller-dist/* LICENSE README.md README.bg.md "release/$release_name/"
           cd release/
           7z a -tzip -mx9 "$archive" "$release_name/"
 
