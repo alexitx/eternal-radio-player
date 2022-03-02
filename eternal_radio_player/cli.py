@@ -12,6 +12,7 @@ from ._version import __version__
 from .config import Config
 from .constants import CREDITS
 from .exceptions import PlayerError
+from .i18n import I18n, I18nError
 from .player import get_output_device, get_output_devices, RadioPlayer
 from .utils import format_exc, system_info
 
@@ -308,7 +309,8 @@ def main():
     log.debug(f'System information:\n{system_info()}')
 
     defaults = {
-        'output-device': get_output_device()['index']
+        'output-device': get_output_device()['index'],
+        'language': I18n.get_preferred_locale()
     }
     Config.init(args.config)
     Config.load(defaults)
@@ -320,8 +322,16 @@ def main():
         except ImportError:
             log.debug('GUI dependencies not available')
         else:
-            log.info('Starting in GUI mode')
+            # Import GUI package early to load Qt resources
             from .gui.gui import gui_main
+
+            try:
+                I18n.load_translations()
+            except I18nError as e:
+                error(f'Could not load translations', e)
+            I18n.locale = Config.data['language']
+
+            log.info('Starting in GUI mode')
             sys.exit(gui_main())
 
     try:

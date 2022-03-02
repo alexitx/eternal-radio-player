@@ -6,16 +6,18 @@ from functools import partial
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from ..config import Config
-from ..constants import CREDITS, RECENT_SONGS_UPDATE_TIME, REQUEST_TIMEOUT
+from ..constants import CREDITS, LOCALES, RECENT_SONGS_UPDATE_TIME, REQUEST_TIMEOUT
 from ..exceptions import PlayerError
 from ..player import RadioPlayer
 from ..utils import qt_resource, system_info
 from .generated.main_window import Ui_MainWindow
+from ..i18n import I18n
 from .logging_ import QPlainTextEditHandler
 from .widgets import RecentSong
 
 
 log = logging.getLogger(__name__)
+t = I18n.translate
 
 
 class RecentSongsUpdateWorker(QtCore.QObject):
@@ -68,6 +70,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.console_handler.setFormatter(formatter)
         self.console_handler.message.connect(self.ui.console.appendPlainText)
         root_logger.addHandler(self.console_handler)
+
+        self.retranslate_ui()
 
         self.player = RadioPlayer()
         self.player.set_volume(Config.data['volume'])
@@ -125,10 +129,17 @@ class MainWindow(QtWidgets.QMainWindow):
         settings_infos_font.setPointSize(9)
         self.ui.system_info.setFont(settings_infos_font)
         self.ui.credits.setFont(settings_infos_font)
+
+        for i, locale in enumerate(LOCALES):
+            self.ui.language_input.addItem(I18n.get_language_name(locale), locale)
+            if locale == Config.data['language']:
+                self.ui.language_input.setCurrentIndex(i)
+
         self.ui.system_info.setPlainText(system_info())
         self.ui.credits.setPlainText(CREDITS)
         self.ui.connection_timeout_input.setValue(Config.data['connection-timeout'])
         self.ui.recent_songs_update_time_input.setValue(Config.data['recent-songs-update-time'])
+
         self.ui.settings_save_button.clicked.connect(self.save_settings)
         self.ui.settings_back_button.clicked.connect(lambda: self.ui.main_widget.setCurrentIndex(0))
 
@@ -161,20 +172,20 @@ class MainWindow(QtWidgets.QMainWindow):
                 log.error(f'Could not start player: {e}')
                 self.ui.play_button.setChecked(False)
                 return
-            self.ui.play_button.setToolTip('Stop')
+            self.ui.play_button.setToolTip(t('play_button_tooltip_stop'))
         else:
             self.player.stop()
-            self.ui.play_button.setToolTip('Play')
+            self.ui.play_button.setToolTip(t('play_button_tooltip_play'))
 
     def on_mute(self, state):
         self.muted = state
         self.set_volume_button_icon(self.ui.volume_button.underMouse() or self.ui.volume_button.hasFocus())
         if self.muted:
             self.player.set_volume(0.0)
-            self.ui.volume_button.setToolTip('Unmute')
+            self.ui.volume_button.setToolTip(t('volume_button_tooltip_unmute'))
         else:
             self.player.set_volume(self.ui.volume_slider.value() / 100)
-            self.ui.volume_button.setToolTip('Mute')
+            self.ui.volume_button.setToolTip(t('volume_button_tooltip_mute'))
 
     def on_volume_change(self, value):
         volume = value / 100
@@ -211,6 +222,10 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
     def save_settings(self):
+        locale = self.ui.language_input.currentData()
+        I18n.locale = locale
+        self.retranslate_ui()
+        Config.data['language'] = locale
         connection_timeout = self.ui.connection_timeout_input.value()
         self.recent_songs_update_worker.timeout = connection_timeout
         Config.data['connection-timeout'] = connection_timeout
@@ -247,6 +262,23 @@ class MainWindow(QtWidgets.QMainWindow):
         self.recent_songs_update_worker.deleteLater()
         Config.save()
         super().closeEvent(event)
+
+    def retranslate_ui(self):
+        self.ui.play_button.setToolTip(t('play_button_tooltip_play'))
+        self.ui.volume_button.setToolTip(t('volume_button_tooltip_mute'))
+        self.ui.volume_slider.setToolTip(t('volume_slider_tooltip'))
+        self.ui.output_device_button.setToolTip(t('output_device_button_tooltip'))
+        self.ui.console_button.setToolTip(t('console_button_tooltip'))
+        self.ui.settings_button.setToolTip(t('settings_button_tooltip'))
+        self.ui.console_back_button.setText(t('generic_back'))
+        self.ui.settings_group.setTitle(t('settings_group_title'))
+        self.ui.language_label.setText(f"{t('settings_language_label')}:")
+        self.ui.connection_timeout_label.setText(f"{t('settings_connection_timeout_label')}:")
+        self.ui.recent_songs_update_time_label.setText(f"{t('settings_recent_songs_update_time_label')}:")
+        self.ui.system_info_group.setTitle(t('settings_system_info_group_title'))
+        self.ui.credits_group.setTitle(t('settings_credits_group_title'))
+        self.ui.settings_save_button.setText(t('generic_save'))
+        self.ui.settings_back_button.setText(t('generic_back'))
 
 
 def gui_main():
