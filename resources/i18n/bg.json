@@ -1,0 +1,19 @@
+{
+    "language_name": "Български",
+    "generic_save": "Запазване",
+    "generic_back": "Назад",
+    "play_button_tooltip_play": "Пускане",
+    "play_button_tooltip_stop": "Спиране",
+    "volume_button_tooltip_mute": "Заглушаване",
+    "volume_button_tooltip_unmute": "Отглушаване",
+    "volume_slider_tooltip": "Сила на Звука",
+    "output_device_button_tooltip": "Изходящо Устройство",
+    "console_button_tooltip": "Преглед на Конзолата",
+    "settings_button_tooltip": "Настройки",
+    "settings_group_title": "Настройки",
+    "settings_language_label": "Език",
+    "settings_connection_timeout_label": "Изчакване на връзката",
+    "settings_recent_songs_update_time_label": "Интервал на обновяване на скорошни песни",
+    "settings_system_info_group_title": "Системна Информация",
+    "settings_credits_group_title": "Лицензи"
+}

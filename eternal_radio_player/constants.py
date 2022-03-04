@@ -58,6 +58,12 @@ RECENT_SONGS_URL = 'https://radio.jump.bg/recentfeed/mnikolov/json'
 RECENT_SONGS_CACHE_TIME = 10.0
 RECENT_SONGS_UPDATE_TIME = 30.0
 
+LOCALES = ('bg', 'en')
+DEFAULT_LOCALE = 'en'
+DEFAULT_SYSTEM_LOCALES = {
+    'bg': ('bg_BG',)
+}
+
 CONFIG_DEFAULTS = {
     'connection-timeout': REQUEST_TIMEOUT,
     'recent-songs-update-time': RECENT_SONGS_UPDATE_TIME,

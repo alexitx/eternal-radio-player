@@ -16,3 +16,7 @@ class PlayerError(EternalRadioPlayerError):
 
 class ResourceError(EternalRadioPlayerError):
     pass
+
+
+class I18nError(EternalRadioPlayerError):
+    pass

@@ -19,4 +19,8 @@
     <file alias="volume-normal.svg">../icons/volume-normal.svg</file>
     <file alias="volume-normal_accent.svg">../icons/volume-normal_accent.svg</file>
   </qresource>
+  <qresource prefix="i18n">
+    <file alias="en.json">../i18n/en.json</file>
+    <file alias="bg.json">../i18n/bg.json</file>
+  </qresource>
 </RCC>

@@ -1,0 +1,19 @@
+{
+    "language_name": "English",
+    "generic_save": "Save",
+    "generic_back": "Back",
+    "play_button_tooltip_play": "Play",
+    "play_button_tooltip_stop": "Stop",
+    "volume_button_tooltip_mute": "Mute",
+    "volume_button_tooltip_unmute": "Unmute",
+    "volume_slider_tooltip": "Volume",
+    "output_device_button_tooltip": "Output Device",
+    "console_button_tooltip": "View Console",
+    "settings_button_tooltip": "Settings",
+    "settings_group_title": "Settings",
+    "settings_language_label": "Language",
+    "settings_connection_timeout_label": "Connection timeout",
+    "settings_recent_songs_update_time_label": "Recent songs update time",
+    "settings_system_info_group_title": "System Information",
+    "settings_credits_group_title": "Credits"
+}
