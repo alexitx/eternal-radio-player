@@ -150,8 +150,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>340</width>
-             <height>478</height>
+             <width>323</width>
+             <height>634</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="settings_layout">
@@ -196,6 +196,9 @@
                  <property name="text">
                   <string notr="true">Connection timeout:</string>
                  </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
                <item row="2" column="0">
@@ -203,10 +206,19 @@
                  <property name="text">
                   <string notr="true">Recent songs update time:</string>
                  </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
                <item row="2" column="1">
                 <widget class="QDoubleSpinBox" name="recent_songs_update_time_input">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="decimals">
                   <number>1</number>
                  </property>
@@ -220,6 +232,12 @@
                </item>
                <item row="1" column="1">
                 <widget class="QDoubleSpinBox" name="connection_timeout_input">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="decimals">
                   <number>1</number>
                  </property>
@@ -236,10 +254,20 @@
                  <property name="text">
                   <string notr="true">Language:</string>
                  </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QComboBox" name="language_input"/>
+                <widget class="QComboBox" name="language_input">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
