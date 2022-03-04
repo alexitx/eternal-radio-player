@@ -8,7 +8,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from ..config import Config
 from ..constants import CREDITS, LOCALES, RECENT_SONGS_UPDATE_TIME, REQUEST_TIMEOUT
 from ..exceptions import PlayerError
-from ..player import RadioPlayer
+from ..player import get_output_devices, RadioPlayer
 from ..utils import qt_resource, system_info
 from .generated.main_window import Ui_MainWindow
 from ..i18n import I18n
@@ -115,6 +115,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.volume_slider.setValue(int(Config.data['volume'] * 100))
         self.ui.volume_slider.valueChanged.connect(self.on_volume_change)
 
+        self.output_device_menu = QtWidgets.QMenu(self.ui.controls_widget)
+        self.output_device_menu.setObjectName('output_device_menu')
+        self.ui.output_device_button.clicked.connect(self.open_output_devices_menu)
+
         self.ui.console_button.clicked.connect(lambda: self.ui.main_widget.setCurrentIndex(1))
         self.ui.settings_button.clicked.connect(lambda: self.ui.main_widget.setCurrentIndex(2))
 
@@ -193,6 +197,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.player.set_volume(volume)
         Config.data['volume'] = volume
 
+    def on_output_device_change(self, action):
+        self.player.stop()
+        self.player.output_device = action.data()
+        Config.data['output-device'] = action.data()['index']
+
     def set_widget_icon(self, widget, icon_normal, icon_accent=None, highlight=False):
         if highlight and icon_accent:
             widget.setIcon(icon_accent)
@@ -220,6 +229,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.volume_normal_icon_accent,
                 highlight
             )
+
+    def open_output_devices_menu(self):
+        self.output_device_menu.clear()
+        for output_device in get_output_devices():
+            action = self.output_device_menu.addAction(output_device['name'])
+            action.setData(output_device)
+            action.triggered.connect(partial(self.on_output_device_change, action))
+        self.output_device_menu.exec(self.ui.controls_widget.mapToGlobal(self.ui.output_device_button.pos()))
 
     def save_settings(self):
         locale = self.ui.language_input.currentData()
