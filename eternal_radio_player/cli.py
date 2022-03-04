@@ -40,6 +40,7 @@ class App(cmd.Cmd):
         self._log = logger
         self._player = RadioPlayer(Config.data['output-device'], Config.data['connection-timeout'])
         self._player.set_volume(Config.data['volume'])
+        Config.data['output-device'] = self._player.output_device['index']
 
     def do_play(self, _):
         try:

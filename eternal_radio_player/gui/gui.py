@@ -73,8 +73,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.retranslate_ui()
 
-        self.player = RadioPlayer()
+        self.player = RadioPlayer(Config.data['output-device'], Config.data['connection-timeout'])
         self.player.set_volume(Config.data['volume'])
+        Config.data['output-device'] = self.player.output_device['index']
         self.playing = False
         self.muted = False
 
