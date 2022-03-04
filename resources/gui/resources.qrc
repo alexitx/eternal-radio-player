@@ -21,5 +21,6 @@
   </qresource>
   <qresource prefix="i18n">
     <file alias="en.json">../i18n/en.json</file>
+    <file alias="bg.json">../i18n/bg.json</file>
   </qresource>
 </RCC>
