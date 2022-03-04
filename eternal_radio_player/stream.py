@@ -49,9 +49,9 @@ def stream_request(timeout=REQUEST_TIMEOUT, **kwargs):
     else:
         raise ValueError(f'Unsupported stream encoding: {content_type}')
 
-    if 'icy_sr' in response.headers:
+    if 'icy-sr' in response.headers:
         try:
-            sample_rate = int(response.headers['icy_sr'])
+            sample_rate = int(response.headers['icy-sr'])
         except ValueError:
             sample_rate = None
     else:
