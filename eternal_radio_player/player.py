@@ -64,6 +64,8 @@ def check_output_device_params(device_index, channels, sample_rate, sample_width
             samplerate=sample_rate
         )
     except sounddevice.PortAudioError as e:
+        if e.args[1] == -9996:
+            raise ValueError(f"Invalid device with index '{device_index}'") from e
         log.debug(
             f'Incompatible device parameters: Index: {device_index}, Channels: {channels}, '
             f'Width: {sample_width}, Rate: {sample_rate}, Error: {e}'
