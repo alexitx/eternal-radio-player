@@ -83,12 +83,12 @@ larger and slower.
 
     On Debian-based distros (Ubuntu, Mint, Pop!_OS, etc.):
     ```sh
-    sudo apt update && sudo apt install -y libportaudio2
+    sudo apt install libportaudio2
     ```
 
     On Arch-based distros (Arch, Manjaro, EndeavourOS, etc.):
     ```sh
-    sudo pacman -Syy && sudo pacman -S portaudio
+    sudo pacman -S portaudio
     ```
 
     If unsure, check online on how to install portaudio on your system.

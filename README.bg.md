@@ -86,12 +86,12 @@
 
     За дистрибуции базирани на Debian (Ubuntu, Mint, Pop!_OS, и други):
     ```sh
-    sudo apt update && sudo apt install -y libportaudio2
+    sudo apt install libportaudio2
     ```
 
     За дистрибуции базирани на Arch (Manjaro, EndeavourOS, и други):
     ```sh
-    sudo pacman -Syy && sudo pacman -S portaudio
+    sudo pacman -S portaudio
     ```
 
     Ако не сте сигурни, потърсете онлайн как да инсталирате portaudio на вашата система.
